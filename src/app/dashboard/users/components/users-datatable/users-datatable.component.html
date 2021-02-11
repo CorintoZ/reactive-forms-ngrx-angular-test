@@ -1,0 +1,38 @@
+<h2>Users datatable component</h2>
+<p>Ngx datatable documentation: <a href="https://swimlane.github.io/ngx-datatable/" target="_blank">Click here</a></p>
+
+<ngx-datatable class="material" [rows]="users">
+
+  <ngx-datatable-column name="First name" prop="firstname"></ngx-datatable-column>
+  <ngx-datatable-column name="Last name" prop="lastname"></ngx-datatable-column>
+  <ngx-datatable-column name="User name" prop="username"></ngx-datatable-column>
+  <ngx-datatable-column name="Email" prop="email"></ngx-datatable-column>
+  <ngx-datatable-column name="Role" prop="role"></ngx-datatable-column>
+
+  <ngx-datatable-column name="Birthday" prop="birthday">
+    <ng-template ngx-datatable-cell-template let-value="value">
+      {{value | date: 'MM/dd/yy'}}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="true" [draggable]="false" [resizeable]="false"
+    prop="id" name="">
+    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+      let-onCheckboxChangeFn="onCheckboxChangeFn">
+      <span class="material-icons" [routerLink]="['user-management', value]">
+        mode_edit
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="true" [draggable]="false" [resizeable]="false"
+    prop="id"  name="">
+    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+      let-onCheckboxChangeFn="onCheckboxChangeFn">
+      <span class="material-icons" (click)="test(value)">
+        delete
+      </span>
+    </ng-template>
+  </ngx-datatable-column>
+
+</ngx-datatable>
