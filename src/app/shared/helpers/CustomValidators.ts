@@ -11,22 +11,11 @@ export class CustomValidators extends Validators {
     }
   }
 
-  static mustMatch(control1: string, control2: string) {
-    return (formGroup: FormGroup) => {
-      const control = formGroup.controls[control1]
-      const matchingControl = formGroup.controls[control2]
-
-      if (matchingControl.errors && !matchingControl.errors.mustMatch) {
-        // return if another validator has already found an error on the matchingControl
-        return
-      }
-
-      // set error on matchingControl if validation fails
-      if (control.value !== matchingControl.value) {
-        matchingControl.setErrors({ mustMatch: true })
-      } else {
-        matchingControl.setErrors(null)
-      }
+  static mustMatch(c: AbstractControl): { [key: string]: boolean } {
+    if (c.get('password1').value !== c.get('password2').value) {
+      return { nomatch: true }
+    } else {
+      return null
     }
   }
 }

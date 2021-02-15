@@ -5,10 +5,22 @@ import { RootState } from '../store'
 
 export class UsersState {
   users: Array<User>
+  selectedUser: User
 }
 
 const INITIAL_STATE: UsersState = {
   users: [],
+  selectedUser: {
+    id: '',
+    firstname: '',
+    lastname: '',
+    username: '',
+    email: '',
+    birthday: '',
+    password: '',
+    role: '',
+    skills: [],
+  },
 }
 
 export function usersReducer(state: UsersState = INITIAL_STATE, action: All) {
@@ -36,10 +48,21 @@ export function usersReducer(state: UsersState = INITIAL_STATE, action: All) {
     case UsersActionTypes.GET_USER_SUCCESS:
       return {
         ...state,
-        users: action.payload,
+        selectedUser: action.payload,
       }
 
     case UsersActionTypes.GET_USER_ERROR:
+      return {
+        ...state,
+      }
+
+    case UsersActionTypes.DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        users: [...state.users.filter((x) => x.id !== action.payload)],
+      }
+
+    case UsersActionTypes.DELETE_USER_ERROR:
       return {
         ...state,
       }

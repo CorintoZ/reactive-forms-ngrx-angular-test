@@ -8,49 +8,158 @@
 <div class="card">
   <div class="card-body p-relative">
     <!--Comment: Code to show spinner container-->
-    <!-- <div class="loading-container">
+    <div class="loading-container" *ngIf="isLoading">
       <div class="loader"></div>
-    </div> -->
+    </div>
     <h5 *ngIf="!userId" class="card-title">Create new user</h5>
     <h5 *ngIf="userId" class="card-title">Edit user {{ user.username }}</h5>
     <h6 class="card-subtitle mb-2 text-muted">All fields with * are required</h6>
-    <form class="needs-validation">
+    <form class="needs-validation" [formGroup]="userForm" (ngSubmit)="handleSubmit()">
       <div class="form-row">
         <div class="col mb-3">
           <label>First name*</label>
-          <input type="text" class="form-control" placeholder="First name" />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="First name"
+            formControlName="firstName"
+            [ngClass]="{ 'has-error': userForm.get('firstName').invalid }"
+          />
+          <div *ngIf="userForm.get('firstName').invalid">
+            <span class="colorInvalid">
+              <i>First name is required</i>
+            </span>
+          </div>
         </div>
         <div class="col mb-3">
           <label>Last name*</label>
-          <input type="text" class="form-control" placeholder="Last name" />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Last name"
+            name="lastName"
+            formControlName="lastName"
+            [ngClass]="{ 'has-error': userForm.get('lastName').invalid }"
+          />
+          <div *ngIf="userForm.get('lastName').invalid">
+            <span class="colorInvalid">
+              <i>Last name is required</i>
+            </span>
+          </div>
         </div>
         <div class="col mb-3">
           <label for="birthday">Birthday*</label>
-          <input type="text" placeholder="Datepicker" class="form-control" />
+          <input
+            type="text"
+            placeholder="Datepicker"
+            class="form-control"
+            bsDatepicker
+            name="birthday"
+            formControlName="birthday"
+            [ngClass]="{ 'has-error': userForm.get('birthday').invalid }"
+          />
+          <div *ngIf="userForm.get('birthday').hasError('required')">
+            <span class="colorInvalid">
+              <i>Birthday is required</i>
+            </span>
+          </div>
+          <div *ngIf="userForm.get('birthday').hasError('underAge')">
+            <span class="colorInvalid">
+              <i>Must be 18 years old</i>
+            </span>
+          </div>
         </div>
       </div>
       <div class="form-row">
         <div class="col mb-3">
           <label>Username*</label>
-          <input type="text" class="form-control" placeholder="Username" />
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Username"
+            name="username"
+            formControlName="username"
+            [ngClass]="{ 'has-error': userForm.get('username').invalid }"
+          />
+          <div *ngIf="userForm.get('username').invalid">
+            <span class="colorInvalid">
+              <i>Username is required</i>
+            </span>
+          </div>
         </div>
         <div class="col mb-3">
           <label>Email*</label>
-          <input type="text" class="form-control" placeholder="Email" />
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Email"
+            name="email"
+            formControlName="email"
+            [ngClass]="{ 'has-error': userForm.get('email').invalid }"
+          />
+          <div *ngIf="userForm.get('email').hasError('required')">
+            <span class="colorInvalid">
+              <i>Email is required</i>
+            </span>
+          </div>
+          <div *ngIf="userForm.get('email').hasError('email')">
+            <span class="colorInvalid">
+              <i>Format invalid</i>
+            </span>
+          </div>
         </div>
         <div class="col mb-3">
           <label for="yesno">Roles*</label>
-          <p>Ng select with roles</p>
+          <ng-select
+            name="role"
+            [items]="roles"
+            bindLabel="label"
+            bindValue="value"
+            formControlName="role"
+            [ngClass]="{ 'has-error': userForm.get('role').invalid }"
+          ></ng-select>
+          <div *ngIf="userForm.get('role').invalid">
+            <span class="colorInvalid">
+              <i>Role is required</i>
+            </span>
+          </div>
         </div>
       </div>
-      <div class="form-row" *ngIf="!editing">
+      <div class="form-row" *ngIf="!editing" formGroupName="password">
         <div class="col mb-3">
           <label>Password*</label>
-          <input type="password" class="form-control" placeholder="Password" />
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Password"
+            formControlName="password1"
+            [ngClass]="{ 'has-error': userForm.get('password.password1').invalid }"
+          />
+          <div *ngIf="userForm.get('password.password1').invalid">
+            <span class="colorInvalid">
+              <i>Password is required</i>
+            </span>
+          </div>
         </div>
         <div class="col mb-3">
           <label>Repeat password*</label>
-          <input type="password" class="form-control" placeholder="Repeat password" />
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Repeat password"
+            formControlName="password2"
+            [ngClass]="{ 'has-error': userForm.get('password.password2').invalid }"
+          />
+          <div *ngIf="userForm.get('password.password2').invalid">
+            <span class="colorInvalid">
+              <i>Password is required</i>
+            </span>
+          </div>
+          <div *ngIf="userForm.get('password').hasError('nomatch')">
+            <span class="colorInvalid">
+              <i>Password does not match</i>
+            </span>
+          </div>
         </div>
       </div>
       <div class="row align-items-center justify-content-space-between">
@@ -58,27 +167,47 @@
           <h6 class="card-subtitle mb-2 text-muted">Skills</h6>
         </div>
         <div class="col-1">
-          <button type="button" class="btn btn-link">Add skill</button>
+          <button type="button" class="btn btn-link" (click)="addSkill()">Add skill</button>
         </div>
       </div>
-      <!--Template skills to display list-->
-      <div class="form-row">
-        <div class="col mb-3">
-          <input type="text" class="form-control" placeholder="Name" />
-        </div>
-        <div class="col mb-3">
-          <input type="text" class="form-control" placeholder="Description" />
-        </div>
-        <div class="col mb-3">
-          <label for="categories">ng select with categories</label>
-        </div>
-        <div class="col-1">
-          <button type="button" class="btn btn-link btn-sm">
+      <div class="form-row" *ngFor="let skill of skills.controls; index as i">
+        <div class="form-row" [formGroup]="skill">
+          <div class="col mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Name"
+              [formControl]="skill.controls.name"
+              [ngClass]="{ 'has-error': skill.controls.name.invalid }"
+            />
+            <div *ngIf="skill.controls.name.invalid">
+              <span class="colorInvalid">
+                <i>Name is required</i>
+              </span>
+            </div>
+          </div>
+          <div class="col mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Description"
+              [formControl]="skill.controls.description"
+            />
+          </div>
+          <div class="col mb-3">
+            <ng-select
+              [items]="categories"
+              bindLabel="label"
+              bindValue="value"
+              [formControl]="skill.controls.category"
+            ></ng-select>
+          </div>
+          <button type="button" class="btn btn-link btn-sm pb-6" (click)="removeSkill(i)">
             <i class="material-icons">close</i>
           </button>
         </div>
       </div>
-      <button type="submit" class="btn btn-default">Save</button>
+      <button type="submit" class="btn btn-default" [disabled]="!userForm.valid">Save</button>
     </form>
   </div>
 </div>

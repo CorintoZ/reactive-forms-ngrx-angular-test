@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { BsModalRef } from 'ngx-bootstrap/modal'
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal'
 
 @Component({
   selector: 'app-confirm-modal',
@@ -10,10 +10,15 @@ export class ConfirmModalComponent implements OnInit {
   title: string
   closeBtnName: string
   list: any[] = []
+  val: string
 
-  constructor(public bsModalRef: BsModalRef) {}
+  constructor(public bsModalRef: BsModalRef, private modalService: BsModalService) {}
 
   ngOnInit() {
     this.list.push('PROFIT!!!')
+  }
+  confirm() {
+    this.modalService.onHide.emit(this.val)
+    this.bsModalRef.hide()
   }
 }

@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core'
 import { RootState } from 'src/app/shared/store/store'
 import { Store } from '@ngrx/store'
-import { GetUsers } from 'src/app/shared/store/actions/users.actions'
+import { DeleteUser, GetUsers } from 'src/app/shared/store/actions/users.actions'
 import { selectUsers } from 'src/app/shared/store/reducers/users.reducer'
 import { DatePipe } from '@angular/common'
 import { ConfirmModalComponent } from 'src/app/shared/ui-components/confirm-modal/confirm-modal.component'
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal'
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-users-datatable',
@@ -14,6 +15,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal'
 })
 export class UsersDatatableComponent implements OnInit {
   @Input() search: string
+  private subscriptions: Subscription = new Subscription()
 
   users
   backUsers
@@ -27,6 +29,11 @@ export class UsersDatatableComponent implements OnInit {
       this.users = users.users
       this.backUsers = [...this.users]
       console.log(this.users)
+    })
+    this.modalService.onHide.subscribe((id) => {
+      if (id) {
+        this.store.dispatch(new DeleteUser(id))
+      }
     })
   }
 
@@ -62,6 +69,7 @@ export class UsersDatatableComponent implements OnInit {
     const initialState = {
       message: 'The user will be delete. Are you sure?',
       title: 'Delete user',
+      val: val,
     }
     this.bsModalRef = this.modalService.show(ConfirmModalComponent, {
       initialState,

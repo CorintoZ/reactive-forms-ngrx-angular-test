@@ -5,12 +5,14 @@
 @import '~@swimlane/ngx-datatable/index.css';
 @import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
-
-
+// estilos ng-select
+@import '~@ng-select/ng-select/themes/default.theme.css';
 
 //Style to display spinner container
-.p-relative{ position: relative; }
-.loading-container{
+.p-relative {
+  position: relative;
+}
+.loading-container {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -63,4 +65,3 @@
     }
   }
 }
-
